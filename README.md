@@ -1,6 +1,6 @@
-# ryan-docker
+# robobase
 
-I'm getting started with writing the actual code for my project, but the 'robotdev' repository is quite messy right now. The intent of that repository is that it's supposed to provide a robot-agnostic ROS environment that you extend with robot-specific and project-specific code, but it's been tangled up with spot-specific code, both for specific projects and for the robot overall.
+This container provides a ROS Noetic environment- nothing more, nothing less.
 
 > [!IMPORTANT]
 > To avoid any potential confusion when discussing which container is being used, I'm calling this new base container `robobase` instead of `robotdev`

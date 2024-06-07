@@ -5,6 +5,10 @@ This container provides a ROS Noetic environment- nothing more, nothing less.
 > [!IMPORTANT]
 > To avoid any potential confusion when discussing which container is being used, I'm calling this new base container `robobase` instead of `robotdev`
 
+## Running with GPU support
+
+To run the `:nvidia` images, make sure to add the `--runtime=nvidia` and `--gpus all` flags to your `docker run` command, or the equivalent keys to a `docker-compose.yml`
+
 ## Building the container manually
 
 > [!NOTE]

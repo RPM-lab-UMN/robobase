@@ -42,6 +42,9 @@ RUN mkdir /code
 # Different shell color
 RUN echo "export PS1='\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]$ '" >> $HOME/.bashrc
 
+# Automatically source ros noetic setup script
+RUN echo "source /opt/ros/noetic/setup.bash" >> $HOME/.bashrc
+
 # print some info on start
 RUN echo "echo -e 'Welcome! You are now in a docker container ().'" >> $HOME/.bashrc
 RUN echo "echo -e \"Docker ID: $(basename $(cat /proc/1/cpuset))\"" >> $HOME/.bashrc

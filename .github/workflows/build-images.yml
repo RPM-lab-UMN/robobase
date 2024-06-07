@@ -16,14 +16,36 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
       
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache-nogpu
+        key: ${{ runner.os }}-buildx-nogpu-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-nogpu-
+
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nogpu -f docker/Dockerfile .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nogpu
+        docker buildx create --use
+        docker buildx build \
+          --cache-from=type=local,src=/tmp/.buildx-cache-nogpu \
+          --cache-to=type=local,dest=/tmp/.buildx-cache-nogpu-new,mode=max \
+          --push \
+          -t ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nogpu \
+          -f docker/Dockerfile .
+
+    - name: Save Docker cache
+      if: always()
+      run: |
+        rm -rf /tmp/.buildx-cache-nogpu
+        mv /tmp/.buildx-cache-nogpu-new /tmp/.buildx-cache-nogpu
 
   build-and-push-dockerfile-nvidia:
     runs-on: ubuntu-latest
@@ -32,11 +54,33 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
       
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache-nvidia
+        key: ${{ runner.os }}-buildx-nvidia-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-nvidia-
+
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Build and push Docker image (NVIDIA)
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nvidia -f docker/Dockerfile.nvidia .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nvidia
+        docker buildx create --use
+        docker buildx build \
+          --cache-from=type=local,src=/tmp/.buildx-cache-nvidia \
+          --cache-to=type=local,dest=/tmp/.buildx-cache-nvidia-new,mode=max \
+          --push \
+          -t ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nvidia \
+          -f docker/Dockerfile.nvidia .
+
+    - name: Save Docker cache
+      if: always()
+      run: |
+        rm -rf /tmp/.buildx-cache-nvidia
+        mv /tmp/.buildx-cache-nvidia-new /tmp/.buildx-cache-nvidia

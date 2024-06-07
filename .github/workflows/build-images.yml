@@ -27,5 +27,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          file: ${context}/docker/Dockerfile
+          file: docker/Dockerfile
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/robobase:nogpu

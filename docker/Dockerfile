@@ -35,6 +35,8 @@ RUN apt-get install -y ros-noetic-joy
 RUN apt-get install -y ros-noetic-twist-mux
 RUN apt-get install -y ros-noetic-teleop-twist-joy
 RUN apt-get install -y ros-noetic-depthimage-to-laserscan
+RUN apt-get install -y python3-catkin-tools
+RUN apt-get install -y python3-osrf-pycommon
 
 # Create directories for driver/project code
 RUN mkdir /code
